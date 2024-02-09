@@ -71,3 +71,8 @@ export const RegisterSchema = z.object({
     message: "Name is required",
   }),
 });
+
+export const SendMessageSchema = z.object({
+  fileId: z.string(),
+  message: z.string(),
+});
