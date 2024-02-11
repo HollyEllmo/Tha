@@ -63,8 +63,8 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
             title: "Too large PDF",
             description: `Your ${
               isSubscribed ? "Pro" : "Free"
-            } plan supports up to ${isSubscribed ? "25" : "5"} pages and ${
-              isSubscribed ? "16" : "4"
+            } plan supports up to ${isSubscribed ? "50" : "25"} pages and ${
+              isSubscribed ? "32" : "16"
             }MB per PDF`,
             variant: "destructive",
           });
