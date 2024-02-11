@@ -8,8 +8,13 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "./auth/user-button";
 import { LoginButton } from "@/components/auth/login-button";
 import { ArrowRight } from "lucide-react";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
-const Navbar = () => {
+interface BillingFormProps {
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
+}
+
+const Navbar = ({ subscriptionPlan }: BillingFormProps) => {
   const pathname = usePathname();
   const user = useCurrentUser();
 
@@ -47,7 +52,14 @@ const Navbar = () => {
                   <Link href="/dashboard">Dashboard</Link>
                 </Button>
               )}
-              {user && <UserButton />}
+              {user && (
+                <UserButton
+                  name={user.name}
+                  email={user.email}
+                  imageUrl={user?.image}
+                  isSubscribed={subscriptionPlan.isSubscribed}
+                />
+              )}
               {!user && (
                 <LoginButton asChild>
                   <Button variant={"default"}>

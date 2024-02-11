@@ -10,6 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import "simplebar-react/dist/simplebar.min.css";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,8 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
 
+  const subscriptionPlan = await getUserSubscriptionPlan();
+
   return (
     <SessionProvider session={session}>
       <html lang="en" className="light">
@@ -37,7 +40,7 @@ export default async function RootLayout({
           >
             <Toaster />
             <Sonner />
-            <Navbar />
+            <Navbar subscriptionPlan={subscriptionPlan} />
             {children}
           </body>
         </Providers>
