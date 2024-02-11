@@ -22,7 +22,7 @@ const Page = () => {
     {
       plan: "Free",
       tagline: "For small side projects.",
-      quota: 10,
+      quota: 15,
       features: [
         {
           text: "25 pages per PDF",
