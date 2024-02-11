@@ -60,10 +60,12 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
         if (!res) {
           return toast({
-            title: "Too many pages in PDF",
+            title: "Too large PDF",
             description: `Your ${
               isSubscribed ? "Pro" : "Free"
-            } plan supports up to ${isSubscribed ? "25" : "5"}`,
+            } plan supports up to ${isSubscribed ? "25" : "5"} pages and ${
+              isSubscribed ? "16" : "4"
+            }MB per PDF`,
             variant: "destructive",
           });
         }
