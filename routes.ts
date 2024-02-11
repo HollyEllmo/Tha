@@ -9,7 +9,6 @@ export const publicRoutes = [
   "/auth/new-verification",
   "/api/uploadthing",
   "/pricing",
-  "/api/webhooks/stripe",
 ];
 
 /**
