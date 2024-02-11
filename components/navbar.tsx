@@ -9,12 +9,13 @@ import { UserButton } from "./auth/user-button";
 import { LoginButton } from "@/components/auth/login-button";
 import { ArrowRight } from "lucide-react";
 import { getUserSubscriptionPlan } from "@/lib/stripe";
+import MobileNav from "./mobile-nav";
 
-interface BillingFormProps {
+interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>;
 }
 
-const Navbar = ({ subscriptionPlan }: BillingFormProps) => {
+const Navbar = ({ subscriptionPlan }: PageProps) => {
   const pathname = usePathname();
   const user = useCurrentUser();
 
@@ -26,7 +27,7 @@ const Navbar = ({ subscriptionPlan }: BillingFormProps) => {
             <span>Tha</span>
           </Link>
 
-          {/* todo: add mobile navbar */}
+          <MobileNav isAuth={!!user} />
 
           <div className="hidden items-center space-x-4 sm:flex">
             <>
@@ -34,16 +35,9 @@ const Navbar = ({ subscriptionPlan }: BillingFormProps) => {
                 asChild
                 variant={pathname === "/pricing" ? "default" : "outline"}
               >
-                <Link href="/pricing">pricing</Link>
+                <Link href="/pricing">Pricing</Link>
               </Button>
-              {user && (
-                <Button
-                  asChild
-                  variant={pathname === "/settings" ? "default" : "outline"}
-                >
-                  <Link href="/settings">Settings</Link>
-                </Button>
-              )}
+
               {user && (
                 <Button
                   asChild

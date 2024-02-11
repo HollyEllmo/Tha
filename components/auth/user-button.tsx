@@ -15,6 +15,7 @@ import { LogoutButton } from "./logout-button";
 import Image from "next/image";
 import Link from "next/link";
 import { Gem } from "lucide-react";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface UserAccountProps {
   email: string | null | undefined;
@@ -29,6 +30,7 @@ export const UserButton = ({
   imageUrl,
   isSubscribed,
 }: UserAccountProps) => {
+  const user = useCurrentUser();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -43,7 +45,7 @@ export const UserButton = ({
               />
             </div>
           ) : (
-            <AvatarFallback className="bg-violet-900">
+            <AvatarFallback className="bg-violet-600">
               <FaUser className="text-white" />
             </AvatarFallback>
           )}
@@ -61,9 +63,11 @@ export const UserButton = ({
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashbord</Link>
-        </DropdownMenuItem>
+        {user && (
+          <DropdownMenuItem asChild>
+            <Link href="/settings">Settings</Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem asChild>
           {isSubscribed ? (
             <Link href="/dashboard/billing">Manage Subscription</Link>

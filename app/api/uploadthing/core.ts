@@ -6,74 +6,119 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { pinecone } from "@/lib/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PineconeStore } from "@langchain/pinecone";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { PLANS } from "@/config/stripe";
 
 const f = createUploadthing();
 
-// FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-  pdfUploader: f({ pdf: { maxFileSize: "4MB" } })
-    // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
-      const user = await currentUser();
+const middleware = async () => {
+  const user = await currentUser();
 
-      if (!user || !user.id) throw new Error("Unauthorized");
+  if (!user || !user.id) throw new Error("Unauthorized");
 
-      return { userId: user.id };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      const createdFile = await db.file.create({
+  const subscriptionPlan = await getUserSubscriptionPlan();
+
+  return { subscriptionPlan, userId: user.id };
+};
+
+const onUploadComplete = async ({
+  metadata,
+  file,
+}: {
+  metadata: Awaited<ReturnType<typeof middleware>>;
+  file: {
+    key: string;
+    name: string;
+    url: string;
+  };
+}) => {
+  const isFileExist = await db.file.findFirst({
+    where: {
+      key: file.key,
+    },
+  });
+
+  if (isFileExist) return;
+
+  const createdFile = await db.file.create({
+    data: {
+      key: file.key,
+      name: file.name,
+      userId: metadata.userId,
+      url: file.url,
+      uploadStatus: "PROCESSING",
+    },
+  });
+
+  try {
+    const response = await fetch(file.url);
+    const blob = await response.blob();
+
+    const loader = new PDFLoader(blob);
+
+    const pageLevelDocs = await loader.load();
+
+    const pagesAmt = pageLevelDocs.length;
+
+    const { subscriptionPlan } = metadata;
+    const { isSubscribed } = subscriptionPlan;
+
+    const isProExceeded =
+      pagesAmt > PLANS.find((plan) => plan.name === "Pro")!.pagePerPdf;
+    const isFreeExceeded =
+      pagesAmt > PLANS.find((plan) => plan.name === "Free")!.pagePerPdf;
+
+    if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
+      await db.file.update({
         data: {
-          key: file.key,
-          name: file.name,
-          userId: metadata.userId,
-          url: file.url,
-          uploadStatus: "PROCESSING",
+          uploadStatus: "FAILED",
+        },
+        where: {
+          id: createdFile.id,
         },
       });
+    }
 
-      try {
-        const response = await fetch(file.url);
-        const blob = await response.blob();
+    // vectorize and index entire document
 
-        const loader = new PDFLoader(blob);
+    const pineconeIndex = pinecone.Index("tha");
 
-        const pageLevelDocs = await loader.load();
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    });
 
-        const pagesAmt = pageLevelDocs.length;
+    await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+      pineconeIndex,
+      namespace: createdFile.id,
+    });
 
-        // vectorize and index entire document
+    await db.file.update({
+      data: {
+        uploadStatus: "SUCCESS",
+      },
+      where: {
+        id: createdFile.id,
+      },
+    });
+  } catch (err) {
+    await db.file.update({
+      data: {
+        uploadStatus: "FAILED",
+      },
+      where: {
+        id: createdFile.id,
+      },
+    });
+  }
+};
 
-        const pineconeIndex = pinecone.Index("tha");
-
-        const embeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPENAI_API_KEY,
-        });
-
-        await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-          pineconeIndex,
-          namespace: createdFile.id,
-        });
-
-        await db.file.update({
-          data: {
-            uploadStatus: "SUCCESS",
-          },
-          where: {
-            id: createdFile.id,
-          },
-        });
-      } catch (err) {
-        await db.file.update({
-          data: {
-            uploadStatus: "FAILED",
-          },
-          where: {
-            id: createdFile.id,
-          },
-        });
-      }
-    }),
+export const ourFileRouter = {
+  freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
+  proPlanUploader: f({ pdf: { maxFileSize: "16MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
