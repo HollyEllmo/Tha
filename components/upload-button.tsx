@@ -60,8 +60,10 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
         if (!res) {
           return toast({
-            title: "Something went wrong",
-            description: "Please try again later!",
+            title: "Too many pages in PDF",
+            description: `Your ${
+              isSubscribed ? "Pro" : "Free"
+            } plan supports up to ${isSubscribed ? "25" : "5"}`,
             variant: "destructive",
           });
         }
