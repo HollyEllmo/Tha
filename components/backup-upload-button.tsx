@@ -31,7 +31,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
     retryDelay: 500,
   });
 
-  const startSimulatedProgress = () => {
+  const startSimuatedProgress = () => {
     setUploadProgress(0);
 
     const interval = setInterval(() => {
@@ -40,7 +40,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
           clearInterval(interval);
           return prevProgress;
         }
-        return prevProgress + 5;
+        return prevProgress + 2.5;
       });
     }, 500);
 
@@ -53,15 +53,19 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
       onDrop={async (acceptedFile) => {
         setIsUploading(true);
 
-        const progressInterval = startSimulatedProgress();
+        const progressInterval = startSimuatedProgress();
 
         // handle file uploading
         const res = await startUpload(acceptedFile);
 
         if (!res) {
           return toast({
-            title: "Something went wrong",
-            description: "Please try again later",
+            title: "Too large PDF",
+            description: `Your ${
+              isSubscribed ? "Pro" : "Free"
+            } plan supports up to ${isSubscribed ? "50" : "25"} pages and ${
+              isSubscribed ? "32" : "16"
+            }MB per PDF`,
             variant: "destructive",
           });
         }
@@ -73,7 +77,7 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
         if (!key) {
           return toast({
             title: "Something went wrong",
-            description: "Please try again later",
+            description: "Please try again later!",
             variant: "destructive",
           });
         }
@@ -101,14 +105,14 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
                   and drop
                 </p>
                 <p className="text-xs text-zinc-500">
-                  PDF (up to {isSubscribed ? "16" : "4"}MB)
+                  PDF (up to {isSubscribed ? "32" : "16"}MB)
                 </p>
               </div>
 
               {acceptedFiles && acceptedFiles[0] ? (
                 <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
                   <div className="px-3 py-2 h-full grid place-items-center">
-                    <File className="h-4 w-4 text-blue-500" />
+                    <File className="h-4 w-4 text-violet-500" />
                   </div>
                   <div className="px-3 py-2 h-full text-sm truncate">
                     {acceptedFiles[0].name}
@@ -150,7 +154,6 @@ const UploadDropzone = ({ isSubscribed }: { isSubscribed: boolean }) => {
 
 const UploadButton = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   return (
     <Dialog
       open={isOpen}
