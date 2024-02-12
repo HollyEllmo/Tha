@@ -138,7 +138,7 @@ export default function Home() {
                 Start asking questions
               </span>
               <span className="mt-2 text-zinc-700">
-                I&apos;s that simple. Try out Tha today - it really take less
+                It&apos;s that simple. Try out Tha today - it really take less
                 than a minute.
               </span>
             </div>
