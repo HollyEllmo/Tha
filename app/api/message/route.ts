@@ -14,8 +14,6 @@ export const POST = async (req: NextRequest) => {
 
   const body = await req.json();
 
-  //TODO May be you have to add "/api/message" to public routes
-
   const user = await currentUser();
 
   if (!user || !user.id) return new Response("Unauthorised", { status: 401 });
