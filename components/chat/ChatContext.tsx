@@ -61,10 +61,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
 
       // step 3
       utils.getFileMessages.setInfiniteData(
-        {
-          fileId,
-          limit: INFINITE_QUERY_LIMIT,
-        },
+        { fileId, limit: INFINITE_QUERY_LIMIT },
         (old) => {
           if (!old) {
             return {
@@ -178,6 +175,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         );
       }
     },
+
     onError: (_, __, context) => {
       setMessage(backupMessage.current);
       utils.getFileMessages.setData(
