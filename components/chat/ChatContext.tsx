@@ -27,7 +27,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const { toast } = useToast();
 
@@ -54,7 +54,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
       setMessage("");
 
       // step 1
-      await utils.getFileMessages.cancel();
+      // await utils.getFileMessages.cancel();
 
       // step 2
       const previousMessages = utils.getFileMessages.getInfiniteData();
