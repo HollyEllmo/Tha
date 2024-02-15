@@ -123,7 +123,11 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
         done = doneReading;
         const chunkValue = decoder.decode(value);
 
+        console.log(chunkValue);
+
         accResponse += chunkValue;
+
+        console.log(accResponse);
 
         // append chunk to the actual message
         utils.getFileMessages.setInfiniteData(
@@ -137,6 +141,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
 
             let updatedPages = old.pages.map((page) => {
               if (page === old.pages[0]) {
+                console.log(page.messages[0].text);
+
                 let updatedMessages;
 
                 if (!isAiResponseCreated) {
@@ -161,6 +167,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
                   });
                 }
 
+                console.log(updatedMessages[0].text);
+
                 return {
                   ...page,
                   messages: updatedMessages,
@@ -170,6 +178,8 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
               return page;
             });
 
+            console.log(updatedPages[0].messages[0].text);
+
             return { ...old, pages: updatedPages };
           }
         );
@@ -177,6 +187,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
     },
 
     onError: (_, __, context) => {
+      console.log(context);
       setMessage(backupMessage.current);
       utils.getFileMessages.setData(
         { fileId },
