@@ -1,8 +1,13 @@
 {
-  "build": {
-    "memory": 2048
-  },
+  "builds": [
+    {
+      "use": "@vercel/node",
+      "config": {
+        "memory": 2048
+      }
+    }
+  ],
   "functions": {
-    "timeout": 30
+    "timeout": 60
   }
 }
