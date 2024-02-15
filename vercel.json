@@ -7,9 +7,9 @@
       }
     }
   ],
-  "functions": [
-    {
+  "serverless": {
+    "functions": {
       "timeout": 60
     }
-  ]
+  }
 }
