@@ -3,10 +3,5 @@
     "env": {
       "BUILD_TIMEOUT": "60"
     }
-  },
-  "functions": {
-    "memory": {
-      "max": 2048
-    }
   }
 }
