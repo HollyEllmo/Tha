@@ -1,0 +1,8 @@
+{
+  "build": {
+    "memory": 2048
+  },
+  "functions": {
+    "timeout": 60
+  }
+}

@@ -101,14 +101,20 @@ export const POST = async (req: NextRequest) => {
 
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
-      await db.message.create({
-        data: {
-          text: completion,
-          isUserMessage: false,
-          fileId,
-          userId: user.id,
-        },
-      });
+      try {
+        const createdMessage = await db.message.create({
+          data: {
+            text: completion,
+            isUserMessage: false,
+            fileId,
+            userId: user.id,
+          },
+        });
+
+        console.log(createdMessage);
+      } catch (error) {
+        console.error("Error saving the message: ", error);
+      }
     },
   });
 
