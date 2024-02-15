@@ -1,7 +1,7 @@
 {
   "build": {
     "env": {
-      "BUILD_TIMEOUT": "60"
+      "BUILD_TIMEOUT": "30"
     }
   }
 }
