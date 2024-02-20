@@ -7,13 +7,6 @@ import { useTransition, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { SettingsSchema } from "@/schemas";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +24,6 @@ import { Input } from "@/components/ui/input";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { UserRole } from "@prisma/client";
 
 const SettingsPage = () => {
   const user = useCurrentUser();
@@ -74,7 +66,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <Card className="sm:w-[600px]">
+    <Card className="sm:w-[600px] h-screen sm:h-auto">
       <CardHeader>
         <p className="text-2xl font-semibold text-center">⚙ Settings</p>
       </CardHeader>
@@ -181,9 +173,11 @@ const SettingsPage = () => {
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
-            <Button disabled={isPending} type="submit">
-              Save
-            </Button>
+            <div className="flex items-center justify-center">
+              <Button disabled={isPending} type="submit" className="w-52">
+                Save
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
