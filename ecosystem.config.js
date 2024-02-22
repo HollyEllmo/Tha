@@ -21,7 +21,7 @@ module.exports = {
         UPLOADTHING_SECRET:
           "sk_live_418c330842532241e83fc781721265abfca985ea6c213b80727c030efef4ce9c",
         UPLOADTHING_APP_ID: "47u83jijia",
-        OPENAI_API_KEY: "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",
+        OPENAI_API_KEY: "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",
         STRIPE_SECRET_KEY:
           "sk_test_51OhXS6C4lTTB5v8wJsCOSUFc8zTdnr6oAp0dLJZ2XixvWcsh50jPccSCqSBtBHCd8Zu2ckHxa44IEcguktzXRlGj00R0a3YZEW",
         STRIPE_WEBHOOK_SECRET: "whsec_UcCIJzw97CtP90oLnVP6Rbr1OG1DyNod",
