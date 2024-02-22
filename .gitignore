@@ -29,9 +29,15 @@ yarn-error.log*
 .env*.local
 .env
 
+
+ecosystem.config.js
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Sentry Config File
+.sentryclirc
